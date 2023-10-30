@@ -83,7 +83,6 @@
 <div>
     <%= name %>
     <table class="ortala" cellpadding="10" cellspacing="0">
-
         <thead class="table-light">
             <tr>
                 <th style="text-align: center;">Detay</th>
@@ -91,10 +90,8 @@
                 <th style="text-align: center;">Toplam Borç</th>
             </tr>
         </thead>
-
         <tbody>
-            @foreach (var item in Model.Items.GroupBy(s => s.hesap_kodu))
-            {
+            <% Model.Items.GroupBy(s => s.hesap_kodu).forEach(function(item) { %>
                 <tr class="parent-row">
                     <td class="button" style="width: 80px;">
                         <div class="button-container">
@@ -102,34 +99,36 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @item.Key
+                        <%= item.Key %>
                     </td>
                     <td style="text-align: center;">
-                        @foreach (var subItem in Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))))
-                        {
-                            @foreach (var subItem2 in Model.GetChildren(subItem.Key))
-                            {
-                                <li type="none" style="color:red">@(subItem2.borc.HasValue ? subItem2.borc : "0") TL</li>
-                            }
-                        }
+                        <% Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))).forEach(function(subItem) { %>
+                            <% Model.GetChildren(subItem.Key).forEach(function(subItem2) { %>
+                                <li type="none" style="color:red">
+                                    <%= subItem2.borc.HasValue ? subItem2.borc : "0" %> TL
+                                </li>
+                            <% }); %>
+                        <% }); %>
                     </td>
                 </tr>
-                @foreach (var subItem in Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))))
-                {
+                <% Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))).forEach(function(subItem) { %>
                     <tr class="child-row">
                         <td></td>
-                        <td style="text-align: center;">@subItem.Key</td>
+                        <td style="text-align: center;">
+                            <%= subItem.Key %>
+                        </td>
                         <td style="text-align: center;">
                             <ul>
-                                @foreach (var subItem2 in Model.GetChildren(subItem.Key))
-                                {
-                                    <li type="none" style="color:red">@(subItem2.borc.HasValue ? subItem2.borc : "0") TL</li>
-                                }
+                                <% Model.GetChildren(subItem.Key).forEach(function(subItem2) { %>
+                                    <li type="none" style="color:red">
+                                        <%= subItem2.borc.HasValue ? subItem2.borc : "0" %> TL
+                                    </li>
+                                <% }); %>
                             </ul>
                         </td>
                     </tr>
-                }
-            }
+                <% }); %>
+            <% }); %>
         </tbody>
     </table>
 </div>
