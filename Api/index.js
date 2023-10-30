@@ -1,15 +1,22 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
+const ApiService = require('./ApiService');
+const path = require('path')
 
-axios
-  .get(
-    "https://efatura.etrsoft.com/fmi/data/v1/databases/testdb/layouts/testdb/records/1"
-  )
-  .then((response) => {
-    const $ = cheerio.load(response.data);
-    const title = $("title").text();
-    console.log(title);
-  })
-  .catch((error) => {
-    console.log(error);
+const express = require("express");
+const app = express();
+const PORT = 5000;
+
+app.set('views', path.join(__dirname, '../views'));
+app.set('view engine', 'ejs');
+
+app.get('/', function(req, res) {
+  res.render('index',{});
+});
+
+app.get('/table', function(req, res) {
+  res.render('table',{
+    items:[]
   });
+});
+
+
+app.listen(PORT, () => console.log(`Connected to ${PORT}`));
