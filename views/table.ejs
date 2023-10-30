@@ -91,7 +91,8 @@
             </tr>
         </thead>
         <tbody>
-            <% Model.Items.GroupBy(s => s.hesap_kodu).forEach(function(item) { %>
+            <% for (var i = 0; i < Model.Items.length; i++) { %>
+                <% var item = Model.Items[i]; %>
                 <tr class="parent-row">
                     <td class="button" style="width: 80px;">
                         <div class="button-container">
@@ -99,39 +100,40 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <%= item.Key %>
+                        <%= item.hesap_kodu %>
                     </td>
                     <td style="text-align: center;">
-                        <% Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))).forEach(function(subItem) { %>
-                            <% Model.GetChildren(subItem.Key).forEach(function(subItem2) { %>
+                        <% for (var j = 0; j < Model.GetChildren(item.hesap_kodu).length; j++) { %>
+                            <% var subItem = Model.GetChildren(item.hesap_kodu)[j]; %>
+                            <% for (var k = 0; k < Model.GetChildren(subItem.hesap_kodlari[0] + '.' + subItem.hesap_kodlari[1]).length; k++) { %>
+                                <% var subItem2 = Model.GetChildren(subItem.hesap_kodlari[0] + '.' + subItem.hesap_kodlari[1])[k]; %>
                                 <li type="none" style="color:red">
                                     <%= subItem2.borc.HasValue ? subItem2.borc : "0" %> TL
                                 </li>
-                            <% }); %>
-                        <% }); %>
+                            <% } %>
+                        <% } %>
                     </td>
                 </tr>
-                <% Model.GetChildren(item.Key).GroupBy(s => string.Join('.', s.hesap_kodlari.Take(2))).forEach(function(subItem) { %>
+                <% for (var j = 0; j < Model.GetChildren(item.hesap_kodu).length; j++) { %>
+                    <% var subItem = Model.GetChildren(item.hesap_kodu)[j]; %>
                     <tr class="child-row">
                         <td></td>
                         <td style="text-align: center;">
-                            <%= subItem.Key %>
+                            <%= subItem.hesap_kodlari[0] + '.' + subItem.hesap_kodlari[1] %>
                         </td>
                         <td style="text-align: center;">
                             <ul>
-                                <% Model.GetChildren(subItem.Key).forEach(function(subItem2) { %>
+                                <% for (var k = 0; k < Model.GetChildren(subItem.hesap_kodlari[0] + '.' + subItem.hesap_kodlari[1]).length; k++) { %>
+                                    <% var subItem2 = Model.GetChildren(subItem.hesap_kodlari[0] + '.' + subItem.hesap_kodlari[1])[k]; %>
                                     <li type="none" style="color:red">
                                         <%= subItem2.borc.HasValue ? subItem2.borc : "0" %> TL
                                     </li>
-                                <% }); %>
+                                <% } %>
                             </ul>
                         </td>
                     </tr>
-                <% }); %>
-            <% }); %>
+                <% } %>
+            <% } %>
         </tbody>
     </table>
 </div>
-
-
-
